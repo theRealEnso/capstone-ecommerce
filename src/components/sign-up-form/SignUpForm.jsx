@@ -1,4 +1,4 @@
-import React from 'react';
+import {useState} from 'react';
 import { createAuthUserWithEmailAndPassword, createUserDocumentFromAuth } from '../../utilities/firebase/firebaseUtilities';
 import FormInput from '../form-input/FormInput';
 import './signUpForm.styles.scss';
@@ -6,7 +6,7 @@ import Button from '../button/Button';
 
 const SignUpForm = () => {
 
-    const [formFields, setFormFields] = React.useState({
+    const [formFields, setFormFields] = useState({
         displayName: '',
         email: '',
         password: '',
@@ -33,7 +33,10 @@ const SignUpForm = () => {
         };
 
         try {
-            const {user}= await createAuthUserWithEmailAndPassword(email, password); // destructure user from response object. Then create user with email and password
+            // const response = await signInWithGooglePopup();
+            // console.log(response);
+            const {user} = await createAuthUserWithEmailAndPassword(email, password); // destructure user from response object. Then create user with email and password
+            
             await createUserDocumentFromAuth(user, {displayName}); // then the same user data to create user document
             setFormFields({displayName: '', email: '', password: '', confirmPassword:''});
         } catch (error) {

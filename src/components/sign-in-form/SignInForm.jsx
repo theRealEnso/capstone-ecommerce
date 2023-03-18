@@ -1,8 +1,10 @@
-import React from 'react';
-import {signInWithGooglePopup, createUserDocumentFromAuth, signInAuthUserWithEmailAndPassword} from '../../utilities/firebase/firebaseUtilities';
+import {useState} from 'react';
+import {signInWithGooglePopup, signInAuthUserWithEmailAndPassword} from '../../utilities/firebase/firebaseUtilities';
+
 import FormInput from '../form-input/FormInput';
-import './signInForm.styles.scss';
 import Button from '../button/Button';
+
+import './signInForm.styles.scss';
 
 const SignInForm = () => {
     // remove redirect sign in method
@@ -21,23 +23,12 @@ const SignInForm = () => {
     // }, []);
 
 
-    const [formFields, setFormFields] = React.useState({
+    const [formFields, setFormFields] = useState({
         email: '',
         password: '',
     });
 
     const {email, password} = formFields;
-
-    const signInWithGoogle = async () => {
-        try {
-            const response = await signInWithGooglePopup();
-            console.log(response);
-            const {user} = response;
-            const userDocRef = await createUserDocumentFromAuth(user);
-        } catch (error) {
-            console.log(error);
-        };
-    };
 
     const handleInputChange = (event) => {
         const {value, name} = event.target;
@@ -49,12 +40,24 @@ const SignInForm = () => {
         });
     };
 
+    const signInWithGoogle = async () => {
+        try {
+            // const response = await signInWithGooglePopup();
+            // console.log(response);
+            await signInWithGooglePopup();
+        } catch (error) {
+            console.log(error);
+        };
+    };
+
     const handleSubmit = async (event) => {
         event.preventDefault();
 
         try {
-            const response = await signInAuthUserWithEmailAndPassword(email, password);
-            console.log(response);
+            // const response = await signInAuthUserWithEmailAndPassword(email, password);
+            // console.log(response);
+            // const {user} = await signInAuthUserWithEmailAndPassword(email, password);
+            await signInAuthUserWithEmailAndPassword(email, password);
         } catch (error) {
             switch (error.code) {
                 case 'auth/wrong-password':
@@ -72,7 +75,7 @@ const SignInForm = () => {
     return (
         <div className='sign-in-container'>
             <h2>Already have an account?</h2>
-            <span>Sign up with your email and password</span>
+            <span>Sign in with your email and password</span>
             <form onSubmit={handleSubmit}>
                 <FormInput label='Email' onChange={handleInputChange} name='email' value={email} required type='email' />
                 <FormInput label='Password' onChange={handleInputChange} name='password' value={password} required type='password' />

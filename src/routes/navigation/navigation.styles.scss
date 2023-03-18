@@ -4,6 +4,10 @@
     display: flex;
     justify-content: space-between;
     margin-bottom: 25px;
+
+    span:hover {
+      color: rgb(39, 96, 209);
+    }
   
     .logo-container {
       height: 100%;
@@ -21,6 +25,10 @@
       .nav-link {
         padding: 10px 15px;
         cursor: pointer;
+      };
+
+      .nav-link:hover {
+        color: rgb(39, 96, 209);
       };
     };
   };

@@ -1,6 +1,6 @@
 import { initializeApp } from "firebase/app";
 // import { getAnalytics } from "firebase/analytics";
-import {getAuth, signInWithRedirect, signInWithPopup, GoogleAuthProvider, createUserWithEmailAndPassword, signInWithEmailAndPassword} from 'firebase/auth';
+import {getAuth, signInWithRedirect, signInWithPopup, GoogleAuthProvider, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged} from 'firebase/auth';
 import {getFirestore, doc, getDoc, setDoc} from 'firebase/firestore'; // getDoc function only gets data inside a document. Likewise, setDoc function only sets the data inside a document. The doc function is what allows us to get the entire document instance (super confusing naming convention!)
 
 const firebaseConfig = {
@@ -73,3 +73,11 @@ export const signInAuthUserWithEmailAndPassword = async (email, password) => {
 
     return await signInWithEmailAndPassword(auth, email, password);
 };
+
+export const signOutUser = async () => await signOut(auth);
+
+export const onAuthStateChangedListener = (callback) => {
+    onAuthStateChanged(auth, callback)
+};
+
+//note that auth i.e getAuth() is sort of like a state that keeps track of user data (if the user is signed in) or null if the user is signed out
