@@ -2,16 +2,20 @@ import {useContext} from 'react';
 
 import {ProductsContext} from '../../contexts/ProductsContext';
 import ProductCard from '../../components/products/ProductCard';
+
+import Scroll from '../../components/scroll-component/Scroll';
 import './shopStyles.scss';
 
 const Shop = () => {
     const {products} = useContext(ProductsContext);
     return (
-        <div className='products-container'>
-            {
-                products.map((product) => (<ProductCard  key={product.id} name={product.name} id={product.id} price={product.price} imageURL={product.imageUrl} />))
-            }
-        </div>
+        <Scroll>
+            <div className='products-container'>
+                {
+                    products.map((product) => (<ProductCard  key={product.id} product={product} />))
+                }
+            </div>
+        </Scroll>
     );
 };
 
