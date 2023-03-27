@@ -5,10 +5,10 @@ import {createContext, useState, useEffect} from 'react';
 
 const addCartItem = (cartItems, productToAdd) => { //helper function accepts 2 arguments. First is the cartItems array of objects. Second is product to add, which ends up being the product object with id, name, price, and imageUrl being passed
     // find if cartItems contains productToAdd using the ID's. The find method returns boolean
-    const existingCartItem = cartItems.find((cartItem) => cartItem.id === productToAdd.id);
+    const itemInCart = cartItems.find((cartItem) => cartItem.id === productToAdd.id);
 
     //if the product already exists in the cart, then just increment the quantity
-    if(existingCartItem){
+    if(itemInCart){
         //map through each item in the cartItems array. If there is an item in the cart that has a matching id of the product we are adding, then return a new array containing within it a brand new object of that cart item and spread that old cart item's properties. Then, increment the quantity of that product by 1
         //Otherwise, if ID's do not match (cartItem is not related to productToAdd), then just return back the original cart item
         return cartItems.map((cartItem) => cartItem.id === productToAdd.id ? {...cartItem, quantity: cartItem.quantity + 1} : cartItem);
@@ -19,23 +19,54 @@ const addCartItem = (cartItems, productToAdd) => { //helper function accepts 2 a
     return [...cartItems, {...productToAdd, quantity: 1}];
 };
 
+const removeItemFromCart = (cartItems, cartItemToRemove) => {
+    //find cart item to remove
+    const itemInCart = cartItems.find((cartItem) => cartItem.id === cartItemToRemove.id);
+
+    //check if quanity equal to 1. If it is, then completely remove that item from the cart. Use filter method
+    if(itemInCart.quantity === 1){
+        return cartItems.filter(cartItem => cartItem.id !== cartItemToRemove.id);
+        //filter returns new array where the cartItem ID does not match the the ID of the cart item being removed, or in other words will return a new array of all the other cart items we still wish to keep (again, excluding the cart item of the ID we are wanting to remove)
+    };
+    //Otherwise, return back cart items with matching cart item with reduced quantity => map through cartItems, if id equals ID of product to be removed, then return new object with the cartItem's previous properties spreaded out and decrement quantity by 1. Else, just return original cart item
+    return cartItems.map((cartItem) => cartItem.id === cartItemToRemove.id ? {...cartItem, quantity: cartItem.quantity - 1} : cartItem);
+};
+
+const deleteCartItem = (cartItems, cartItemToDelete) => {
+    const itemInCart = cartItems.find(cartItem => cartItem.id === cartItemToDelete.id);
+    
+    if(itemInCart){
+        return cartItems.filter((cartItem) => cartItem.id !== cartItemToDelete.id);
+    };
+};
+
 export const CartContext = createContext({
     isCartOpen: false,
     setIsCartOpen: () => {},
     cartItems: [],
     addItemToCart: () => {},
-    cartCount: 0
+    removeItemFromCart: () => {},
+    completelyDeleteItemFromCart: () => {},
+    cartCount: 0,
+    total: 0
 });
 
 export const CartProvider = ({children}) => {
     const [isCartOpen, setIsCartOpen] = useState(false);
     const [cartItems, setCartItems] = useState([]);
     const [cartCount, setCartCount] = useState(0);
+    const [total, setTotal] = useState(0);
 
-    //useEffect block is for updating the cart count. Needs to run everytime state of cartItems changes, so pass in cartItems as the 2nd parameter
+    //this useEffect block is for updating the cart count. Needs to run everytime state of cartItems changes, so pass in cartItems as the 2nd parameter
     useEffect(() => {
-        const newCartCount = cartItems.reduce((accumulator, cartItem) => accumulator + cartItem.quantity, 0); //accumulator starts at 0. Function traverses through array and tallies new total according to quantity of cart items
+        const newCartCount = cartItems.reduce((accumulator, cartItem) => accumulator + cartItem.quantity, 0); //accumulator starts at 0. Function traverses through array and tallies new total according to quantity of cart items. Runs everytime state of cartItems changes
         setCartCount(newCartCount);
+
+    }, [cartItems]);
+
+    useEffect(() => {
+        const newTotal = cartItems.reduce((accumulator, cartItem) => accumulator + (cartItem.quantity * cartItem.price), 0); //accumulator starts at 0. Function traverses through array and tallies new total according to quantity of cart items. Runs everytime state of cartItems changes
+        setTotal(newTotal);
 
     }, [cartItems]);
 
@@ -44,7 +75,15 @@ export const CartProvider = ({children}) => {
         // setCartCount(cartCount + 1);
     };
 
-    const value = {isCartOpen, setIsCartOpen, addItemToCart, cartItems, cartCount}
+    const deleteItemFromCart = (cartItemToRemove) => {
+        setCartItems(removeItemFromCart(cartItems, cartItemToRemove));
+    };
+
+    const completelyDeleteItemFromCart = (cartItemToDelete) => {
+        setCartItems(deleteCartItem(cartItems, cartItemToDelete));
+    }
+
+    const value = {isCartOpen, setIsCartOpen, addItemToCart, deleteItemFromCart, completelyDeleteItemFromCart, cartItems, cartCount, total}
     return (
         <CartContext.Provider value={value}>{children}</CartContext.Provider>
     );

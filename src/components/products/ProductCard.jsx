@@ -23,9 +23,11 @@ const ProductCard = ({product}) => {
 
 export default ProductCard;
 
-// const addItemToCart = (productToAdd) => { // function accepts a product to add as an input. Remember, productToAdd is just a placeholder name. We will be using this CartContext and this addItemToCart function inside the ProductCard component, and inside ProductCard, we will be passing in the entire product as the productToAdd (remember that the entire product is passed as props in the Shop component, which is passed to the ProductCard)
+// const addItemToCart = (productToAdd) => { 
 //     setCartItems(addCartItem(cartItems, productToAdd));
 //     setCartCount(cartCount + 1);
+
+// function accepts a product to add as an input. Remember, productToAdd is just a placeholder name. We will be using this CartContext and this addItemToCart function inside the ProductCard component, and inside ProductCard, we will be passing in the entire product as the productToAdd (remember that the entire product(s) for now is received from hardcoded products data in ProductsContext, which is then passed as props in the Shop component, which is then passed to the ProductCard)
 // };
 
-// setCartItems then updates state of cartItems, and updated cartItems state is reflected in the CartDropDown component => CartDropDown component then maps over the updated cartItems state and renders a CardItem for each item in the array
+// setCartItems then updates state of cartItems, and updated cartItems state is reflected in the CartDropDown component => CartDropDown component then maps over the updated cartItems state and renders a CardItem for each item in the array. It's all connected to each other

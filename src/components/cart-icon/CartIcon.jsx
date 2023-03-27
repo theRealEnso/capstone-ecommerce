@@ -9,8 +9,7 @@ const CartIcon = () => {
     const toggleIsCartOpen = () => setIsCartOpen(!isCartOpen);
 
     const btnRef = useRef();
-
-
+    
     // useEffect block is to implement functionality to also hide the shopping cart when user clicks outside of the cart
     useEffect(() => {
         const closeCartDropDown = (event) => {
