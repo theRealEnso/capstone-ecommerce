@@ -1,7 +1,7 @@
 import { initializeApp } from "firebase/app";
 // import { getAnalytics } from "firebase/analytics";
 import {getAuth, signInWithRedirect, signInWithPopup, GoogleAuthProvider, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged} from 'firebase/auth';
-import {getFirestore, doc, getDoc, setDoc} from 'firebase/firestore'; // getDoc function only gets data inside a document. Likewise, setDoc function only sets the data inside a document. The doc function is what allows us to get the entire document instance (super confusing naming convention!)
+import {getFirestore, doc, getDoc, setDoc, collection, writeBatch, query, getDocs} from 'firebase/firestore'; // getDoc function only gets data inside a document. Likewise, setDoc function only sets the data inside a document. The doc function is what allows us to get the entire document instance (super confusing naming convention!)
 
 const firebaseConfig = {
   apiKey: "AIzaSyD79nPXhJ9-gsSaP1j0XFy09oMdBT-Kzhg",
@@ -30,6 +30,73 @@ export const signInWithGoogleRedirect = () => signInWithRedirect(auth, googlePro
 
 //////////////////     CREATING DATABASE AND CREATING COLLECTION/DOC/STORING DATA  //////////////////////////////////////////////
 export const db = getFirestore(); //first, instantiate firestore
+
+//async function to create collection in firebase and create documents. Has two parameters collectionKey and objectToAdd. ObjectToAdd is a placeholder that will accept the array of objects for each of our product categories inside shop-data.js (passing in SHOP_DATA), and collectionKey is placeholder that will accept a string--will pass 'categories' string so that db will create a collection named "categories"
+export const addCollectionAndDocuments = async (collectionKey, objectsToAdd) => {
+    const collectionRef = collection(db, collectionKey); //collectionRef now refers to categories collection inside db
+    const batch = writeBatch(db); // create batch instance in order to add all of our objects to collectionRef in one successful transaction. A writeBatch is created using the writeBatch method from the Firestore SDK. A batch is a way to perform multiple write operations atomically. This means that either all the write operations will succeed, or none of them will.
+
+    //Iterating through SHOP_DATA, create and set each object into collectionRef a.k.a categories collection as a new document, passing in the title. This creates hats/jackets/mens/sneakers/womens documents that will be nested under categories using the doc method. Finally, set method is used to populate  hats/jackets/mens/sneakers/womens docs with their respective data
+
+    //Or in other words, The function then iterates over each object in the objectsToAdd array, creating a reference to a document within the collectionRef using the doc method from the Firestore SDK. The document reference is created using the object's title property as the document ID, converted to lowercase using the toLowerCase method.
+    objectsToAdd.forEach((object) => {
+        const docRef = doc(collectionRef, object.title.toLowerCase());
+        batch.set(docRef, object);
+        //Finally, the batch.set method is used to add the object to the batch as a write operation, with the document reference and the object passed in as arguments. This adds the document to the batch to be written to the database.
+    });
+
+    await batch.commit();
+    //After all documents have been added to the batch, the batch.commit method is called to commit all the write operations to the database. This returns a Promise which resolves when all the write operations have been completed successfully.
+    console.log('done!');
+};
+
+//async function to get categories + products documents from firestore, returns them as an map object (closest thing to hashmap)
+export const getCategoriesAndDocuments = async () => {
+    const collectionRef = collection(db, 'categories'); //collectionRef uses collection method to create a reference to categories collection inside firebase
+    const q = query(collectionRef); // query method on collectionRef creates a query that retrieves all of the documents in categories collection (i.e. hats/jackets/sneakers/womens/mens)
+
+    const querySnapshot = await getDocs(q); // The getDocs method from the Firestore SDK is used to asynchronously retrieve the documents matching the query, which is stored in the querySnapshot constant.
+    // console.log(querySnapshot); //prints giant object
+    // console.log(querySnapshot.docs); //nest one layer deeper => .docs contains array of 5 product doc instances for each category
+    const categoryMap = querySnapshot.docs.reduce((accumulator, docSnapshot) => { //querySnapshot.docs is an array that contains our product documents nested under categories collection. Accumulator initializes as empty object
+        // console.log(docSnapshot);
+        console.log(docSnapshot.data()); // .data nested layer shows up under prototype
+        const {title, items} = docSnapshot.data(); // destructure title and items array off of docSnapshot
+        accumulator[title.toLowerCase()] = items; // creating a hash table. Remember that accumulator is an object. On each callback, accumulator object updates with new key-value pairs added (key is the product title, value is array of product objects)
+        return accumulator; 
+    }, {});
+
+    console.log(categoryMap);
+    return categoryMap; // eventually, our object will be a hash table aka giant object, and nested in it the 5 product documents, and nested in each product document an array of product objects tied to that particular product doc (see in red below)
+
+
+    // The function then processes the querySnapshot using the reduce method to create the categoryMap object. The reduce method takes two arguments: a callback function and an initial value for the accumulator. Initial value of accumulator is set as an empty object
+
+    // The callback function is called once for each document in the querySnapshot. It takes two arguments: the accumulator object and the current docSnapshot. The accumulator is the value returned from the previous call to the callback, or the initial value if it's the first call (initial value is empty object). The docSnapshot represents a single product document in the querySnapshot.docs array
+
+    // The callback function extracts the title and items properties from the document data using destructuring and stores them in the title and items constants, respectively. (items is an array of product objects)
+
+    // The accumulator object is then updated by setting a new key-value pair, with the title converted to lowercase using the toLowerCase method as the key and items as the value. Continues this pattern until callback executes on all product documents in the querySnapshot
+
+    // After processing all the documents, the categoryMap object is returned from the function.
+
+    // Overall, the getCategoriesAndDocuments function provides a convenient way to retrieve all documents from a collection in Firestore and store them as a JavaScript object with lowercase document titles as keys and document data as values.
+};
+
+/* categoryMap should end up looking like this-- one giant object nested within it our product categories, and nested under each product categories is an array of objects for each product
+{
+    hats: [{...},{...},{...},{...},{...},{...},],
+
+    jackets: [{...},{...},{...},{...},{...},{...},],
+    
+    sneakers: [{...},{...},{...},{...},{...},{...},],
+    
+    mens: [{...},{...},{...},{...},{...},{...},],
+
+    womens: [{...},{...},{...},{...},{...},{...},],
+}
+
+*/
 
 //async function that accepts user authentication object and store inside of firestore =>  (reminder that userAuth is just a placeholder name). We will be passing in destructured user data directly from the response object back in the SignInComponent
 export const createUserDocumentFromAuth = async (userAuth, additionalInformation = {}) => {

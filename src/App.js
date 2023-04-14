@@ -14,9 +14,11 @@ const App = () => {
     {/* With this new structure, our Navigation is essentially a parent component relative to the rest of the other components */}
       <Route path='/' element={<Navigation />}>
         <Route index={true} element={<Home />}></Route>
-        <Route path='/shop' element={<Shop />}></Route>
-        <Route path='/sign-in' element={<Authentication />}></Route>
-        <Route path='/checkout' element={<Checkout />}></Route>
+
+        {/* shop route has a /* => the * tells code that when we go to /shop route, we know that there will be a parameter set after shop, because shop will have its own routes inside i.e. /shop/hats, /shop/sneakers, etc etc and to always render the shop component */}
+        <Route path='shop/*' element={<Shop />}></Route> 
+        <Route path='sign-in' element={<Authentication />}></Route>
+        <Route path='checkout' element={<Checkout />}></Route>
       </Route>
     </Routes>
   );

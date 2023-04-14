@@ -1,16 +1,16 @@
-import './formInput.styles.scss';
+import {FormInputLabel, Input, Group} from './formInput.styles.jsx';
 
-const FormInput = ({label, ...otherProps}) => {
+const FormInput = ({label, ...otherProps}) => { // destructuring label and otherProps directly off of props => spread operator to spread out other props such as onClick/name/value/type/required properties
     return (
-        <div className="group">
-            <input className="form-input" {...otherProps} />
+        <Group>
+            <Input {...otherProps} />
 
             {/* if label exists, then render label */}
             {
                 label &&
-                <label className={`${otherProps.value.length ? 'shrink' : null} form-input-label`}>{label}</label>
+                <FormInputLabel shrink={otherProps.value.length}>{label}</FormInputLabel>
             }
-        </div>
+        </Group>
     );
 };
 

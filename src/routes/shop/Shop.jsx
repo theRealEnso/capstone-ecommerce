@@ -1,21 +1,15 @@
-import {useContext} from 'react';
-
-import {ProductsContext} from '../../contexts/ProductsContext';
-import ProductCard from '../../components/products/ProductCard';
-
-import Scroll from '../../components/scroll-component/Scroll';
-import './shopStyles.scss';
+import {Routes, Route} from 'react-router-dom';
+import CategoriesPreview from '../categories-preview/CategoriesPreview';
+import Category from '../category/Category';
 
 const Shop = () => {
-    const {products} = useContext(ProductsContext);
     return (
-        <Scroll>
-            <div className='products-container'>
-                {
-                    products.map((product) => (<ProductCard  key={product.id} product={product} />))
-                }
-            </div>
-        </Scroll>
+        <Routes>
+            <Route index element={<CategoriesPreview />}></Route>
+
+            {/* :category is a placeholder variable that will contain a unique string. Placeholder variable will be used to navigate to nested routes inside further inside shop using Reacts useParams */}
+            <Route path=':category' element={<Category />}></Route>
+        </Routes>
     );
 };
 

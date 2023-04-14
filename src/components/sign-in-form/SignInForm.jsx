@@ -2,9 +2,9 @@ import {useState} from 'react';
 import {signInWithGooglePopup, signInAuthUserWithEmailAndPassword} from '../../utilities/firebase/firebaseUtilities';
 
 import FormInput from '../form-input/FormInput';
-import Button from '../button/Button';
+import Button, {BUTTON_TYPE_CLASSES} from '../button/Button.jsx';
 
-import './signInForm.styles.scss';
+import {SignInContainer, ButtonsContainer} from './signInForm.styles.jsx';
 
 const SignInForm = () => {
     // remove redirect sign in method
@@ -73,20 +73,20 @@ const SignInForm = () => {
     };
 
     return (
-        <div className='sign-in-container'>
+        <SignInContainer>
             <h2>Already have an account?</h2>
             <span>Sign in with your email and password</span>
             <form onSubmit={handleSubmit}>
                 <FormInput label='Email' onChange={handleInputChange} name='email' value={email} required type='email' />
                 <FormInput label='Password' onChange={handleInputChange} name='password' value={password} required type='password' />
 
-                <div className='buttons-container'>
-                    <Button type='submit'>Sign In</Button>
-                    <Button type='button' onClick={signInWithGoogle} buttonType='google'>Sign In With Google</Button>
+                <ButtonsContainer>
+                    <Button type='submit' buttonType={BUTTON_TYPE_CLASSES.base}>Sign In</Button>
+                    <Button type='button' onClick={signInWithGoogle} buttonType={BUTTON_TYPE_CLASSES.google}>Sign In With Google</Button>
                     {/* <Button onClick={signInWithGoogleRedirect} buttonType='google'>Sign In With Google Redirect</Button> */}
-                </div>
+                </ButtonsContainer>
             </form>
-        </div>
+        </SignInContainer>
     );
 };
 
