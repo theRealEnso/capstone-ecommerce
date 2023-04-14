@@ -3,7 +3,7 @@ import {createContext, useState, useEffect} from 'react';
 // product {id, name, price, imageUrl}
 // Cart item has same structure as product but has an additional quantity field => {id, name, price, imageUrl, quantity}
 
-const addCartItem = (cartItems, productToAdd) => { //helper function accepts 2 arguments. First is the current state of cartItems array of objects. Second is product to add, which ends up being the product object with id, name, price, and imageUrl being passed in
+const addCartItem = (cartItems, productToAdd) => { //helper function accepts 2 arguments. First is the current state of cartItems array of objects. Second argument is product to add, which ends up being the product object with id, name, price, and imageUrl being passed in
     // find if cartItems contains an element that matches productToAdd's ID. The find method runs once for each element in the array until it returns a truthy value, then returns that element and stops iterating through the array
     const itemInCart = cartItems.find((cartItem) => cartItem.id === productToAdd.id);
 
