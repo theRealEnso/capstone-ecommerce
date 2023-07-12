@@ -1,7 +1,7 @@
 import { initializeApp } from "firebase/app";
 // import { getAnalytics } from "firebase/analytics";
 import {getAuth, signInWithRedirect, signInWithPopup, GoogleAuthProvider, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged} from 'firebase/auth';
-import {getFirestore, doc, getDoc, setDoc, collection, writeBatch, query, getDocs} from 'firebase/firestore'; // getDoc function only gets data inside a document. Likewise, setDoc function only sets the data inside a document. The doc function is what allows us to get the entire document instance (super confusing naming convention!)
+import {getFirestore, doc, getDoc, setDoc, collection, writeBatch, query, getDocs} from 'firebase/firestore'; // doc gets document instance, getDoc function only gets data inside a document instance. Likewise, setDoc function only sets the data inside a document. The doc function is what allows us to get the entire document instance (super confusing naming convention!)
 
 const firebaseConfig = {
   apiKey: "AIzaSyD79nPXhJ9-gsSaP1j0XFy09oMdBT-Kzhg",
@@ -17,7 +17,7 @@ const firebaseConfig = {
 const firebaseApp = initializeApp(firebaseConfig);
 // const analytics = getAnalytics(firebaseApp);
 
-const googleProvider = new GoogleAuthProvider();
+const googleProvider = new GoogleAuthProvider(); // GoogleAuthProvider is a class. Can be used to create multiple instances of providers
 googleProvider.setCustomParameters({
     prompt: 'select_account'
 });
@@ -83,7 +83,7 @@ export const getCategoriesAndDocuments = async () => {
     // Overall, the getCategoriesAndDocuments function provides a convenient way to retrieve all documents from a collection in Firestore and store them as a JavaScript object with lowercase document titles as keys and document data as values.
 };
 
-/* categoryMap should end up looking like this-- one giant object nested within it our product categories, and nested under each product categories is an array of objects for each product
+/* categoryMap should end up looking like this-- one giant object that has nested within it our product categories, and nested under each product categories is an array of objects for each product
 {
     hats: [{...},{...},{...},{...},{...},{...},],
 
@@ -148,3 +148,22 @@ export const onAuthStateChangedListener = (callback) => {
 };
 
 //note that auth i.e getAuth() is sort of like a state that keeps track of user data (if the user is signed in) or null if the user is signed out
+
+// What is a callback? A callback is just a block of code that performs some desired function
+// Here, we are defining onAuthStateChangedListener, which is really just a wrapper function that wraps onAuthStateChanged and executes this method
+// OnAuthStateChangedListener will execute some sort of callback function that receives a user object. Based on this user object, perform some operation. Since we are actually returning the onAuthStateChanged function, onAuthStateChanged will then receive these same set of instructions to be executed.
+// Since onAuthStateChanged is an open listener, it will automatically listen for anytime the state of the auth singleton changes (i.e. user signs in or out) and run the callback function
+// Specific instructions for the callback function is defined in the user context
+
+//Observer pattern => this is just some kind of asynchronous stream of events
+// { next: (nextVal) => {// do something with nextVal}, error: (error) => {// do something with error}, complete: () => {// do something when complete} }
+// in other words, if we get some event, then we fire next. Once stream of events is done, we fire complete.
+
+/**
+ * onAuthStateChanged creates a listener for us behind the scenes
+ * {
+ * next: callback,
+ * error: errorCallback,
+ * complete: completedCallback
+ * }
+ */

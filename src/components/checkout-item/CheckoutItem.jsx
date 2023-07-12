@@ -5,11 +5,11 @@ import {CheckoutItemContainer, ImageContainer, CheckoutItemName, CheckoutItemQua
 
 const CheckoutItem = ({cartItem}) => {
     const {name, imageUrl, price, quantity} = cartItem;
-    const {completelyDeleteItemFromCart, addItemToCart, deleteItemFromCart} = useContext(CartContext);
+    const {deleteItemFromCart, addItemToCart, removeItemFromCart} = useContext(CartContext);
 
-    const permanentlyRemoveFromCart = () => completelyDeleteItemFromCart(cartItem);
+    const permanentlyRemoveFromCart = () => deleteItemFromCart(cartItem);
     const addOneToCart = () => addItemToCart(cartItem);
-    const removeOneFromCart = () => deleteItemFromCart(cartItem);
+    const removeOneFromCart = () => removeItemFromCart(cartItem);
 
     return (
         <CheckoutItemContainer>

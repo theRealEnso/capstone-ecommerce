@@ -25,6 +25,7 @@ const Navigation = () => {
           </LogoContainer>
 
         <NavLinksContainer>
+        
           <NavLink to='/shop'>
               SHOP
           </NavLink>

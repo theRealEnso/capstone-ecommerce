@@ -5,7 +5,7 @@ import CheckoutItem from '../checkout-item/CheckoutItem';
 import {CheckoutContainer, CheckoutHeader, HeaderBlock, Total } from './checkout.styles.jsx';
 
 const Checkout = () => {
-    const {cartItems, total} = useContext(CartContext);
+    const {cartItems, cartTotal} = useContext(CartContext);
     
     return (
         <CheckoutContainer>
@@ -35,10 +35,13 @@ const Checkout = () => {
                     <span>Remove</span>
                 </HeaderBlock>
             </CheckoutHeader>
-                {
-                    cartItems.map((cartItem) => (<CheckoutItem key={cartItem.id} cartItem={cartItem}/>))
-                }
-                <Total>Total: $ {total}</Total>
+
+            {
+                cartItems.map((cartItem) => (<CheckoutItem key={cartItem.id} cartItem={cartItem}/>))
+            }
+
+            <Total>Total: $ {cartTotal}</Total>
+            
         </CheckoutContainer>
     );
 };

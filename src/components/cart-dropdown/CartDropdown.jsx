@@ -6,7 +6,7 @@ import Button from '../button/Button';
 import CartItem from '../cart-item/CartItem';
 
 const CartDropdown = () => {
-    const {cartItems, total} = useContext(CartContext);
+    const {cartItems, cartTotal} = useContext(CartContext);
 
     const navigate = useNavigate();
     
@@ -21,7 +21,7 @@ const CartDropdown = () => {
                 }
 
                 <Subtotal>
-                    <h3>Subtotal: $ {total}</h3>
+                    <h3>Subtotal: $ {cartTotal}</h3>
                 </Subtotal>
             </CartItems>
 

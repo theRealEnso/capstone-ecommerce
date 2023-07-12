@@ -13,7 +13,8 @@ const CategoryPreview = ({title, products}) => {
 
             <Preview>
                 {
-                    products.filter((_, index) => index < 4) // pass in underscore as first argument, which tells code to ignore it. We just care about the index => return to me a new array of products that have index less than 4 (index of 0, 1, 2, 3)
+                    // pass in underscore as first argument, which tells code to ignore it. We just care about the index => return to me a new array of products that have index less than 4 (index of 0, 1, 2, 3)
+                    products.filter((_, index) => index < 4)
                     .map((product) => <ProductCard key={product.id} product={product} /> ) // then map through each array item and render ProductCard component
                 }
             </Preview>
