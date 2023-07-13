@@ -1,4 +1,4 @@
-import {useContext, useEffect, useRef} from 'react';
+import {useContext, useEffect} from 'react';
 import {ReactComponent as ShoppingCartIcon} from '../../assets/shopping-bag.svg';
 
 import { CartContext } from '../../contexts/CartContext';
@@ -8,7 +8,6 @@ const CartIcon = () => {
     const {isCartOpen, setIsCartOpen, cartCount} = useContext(CartContext);
     const toggleIsCartOpen = () => setIsCartOpen(!isCartOpen);
 
-    const btnRef = useRef();
     
     // useEffect block is to implement functionality to that hides the shopping cart when user clicks outside of the cart. Want cart open when item is added to cart and to stay open on screen when icon is clicked, number of items clicked, actual cart item menu itself is clicked
     useEffect(() => {
@@ -25,7 +24,7 @@ const CartIcon = () => {
     }, [setIsCartOpen]);
 
     return (
-        <CartIconContainer onClick={toggleIsCartOpen} ref={btnRef}>
+        <CartIconContainer onClick={toggleIsCartOpen}>
             <ShoppingCartIcon/>
             <ItemCount>{cartCount}</ItemCount>
         </CartIconContainer>

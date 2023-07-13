@@ -92,13 +92,15 @@ export const CartProvider = ({children}) => {
     console.log(state);
     const {isCartOpen, cartItems, cartCount, cartTotal} = state;
 
-    const updateCartItemsReducer = (newCartItems) => {
+    //whenever the items in the cart are updated, then generate new total, new item counts, and new array of items and call the dispatch function to update the state object with these new values
+    const updateCartReducer = (newCartItems) => {
         // generate newCartTotal
         const newTotal = newCartItems.reduce((accumulator, cartItem) => accumulator + (cartItem.quantity * cartItem.price), 0);
 
         // generate newCartCount
         const newCartCount = newCartItems.reduce((accumulator, cartItem) => accumulator + cartItem.quantity, 0);
-
+        
+        //whenever item is added, subtracted, or removed, then the things that need to change are the totals, the amount of items in the cart, and the array of cart items. Target these 3 readable values in tis particular dispatch function
         dispatch({
             type: CART_ACTION_TYPES.SET_CART_ITEMS,
             payload: {
@@ -109,6 +111,7 @@ export const CartProvider = ({children}) => {
         });
     };
 
+    //separate dispatch for isCartOpen 
     const setIsCartOpen = (boolean) => {
         dispatch({
             type: CART_ACTION_TYPES.SET_IS_CART_OPEN,
@@ -118,17 +121,17 @@ export const CartProvider = ({children}) => {
 
     const addItemToCart = (productToAdd) => { // function accepts a product to add as an input. Remember, productToAdd is just a placeholder name. We will be using this CartContext and this addItemToCart function inside the ProductCard component, and inside ProductCard, we will be passing in the entire product object with name/image/price/id as the productToAdd => data fetched asynchronously from firestore and is returned as a hash map
         const newCartItems = (addCartItem(cartItems, productToAdd));
-        updateCartItemsReducer(newCartItems);
+        updateCartReducer(newCartItems);
     };
 
     const removeItemFromCart = (cartItemToRemove) => {
         const newCartItems = (removeCartItem(cartItems, cartItemToRemove));
-        updateCartItemsReducer(newCartItems);
+        updateCartReducer(newCartItems);
     };
 
     const deleteItemFromCart = (cartItemToDelete) => {
         const newCartItems = (deleteCartItem(cartItems, cartItemToDelete));
-        updateCartItemsReducer(newCartItems);
+        updateCartReducer(newCartItems);
     }
 
     const value = {isCartOpen, setIsCartOpen, addItemToCart, removeItemFromCart, deleteItemFromCart, cartItems, cartCount, cartTotal};
