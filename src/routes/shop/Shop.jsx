@@ -7,7 +7,7 @@ const Shop = () => {
         <Routes>
             <Route index element={<CategoriesPreview />}></Route>
 
-            {/* :category is a placeholder variable that will contain a unique string. Placeholder variable will be used to navigate to nested routes inside further inside shop using Reacts useParams */}
+            {/* :category is a placeholder variable that will contain a unique string. Placeholder variable will be used to navigate to nested routes further inside shop using Reacts useParams */}
             <Route path=':category' element={<Category />}></Route>
         </Routes>
     );

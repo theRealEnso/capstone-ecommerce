@@ -7,12 +7,10 @@ import { getCategoriesAndDocuments } from '../utilities/firebase/firebaseUtiliti
 
 export const CategoriesContext = createContext({
     categoriesMap: {},
-
 });
 
 export const CategoriesProvider = ({children}) => {
     const [categoriesMap, setCategoriesMap] = useState({});
-    const value = {categoriesMap}; // export categoriesMap as an object hash table
 
     //get data one time when app mounts
     //note: recall that getCategoriesAndDocuments is an async function that returns a promise. We cannot call async functions directly inside a useEffect. Must create new async function and nest it inside new async function, and then call it afterwards
@@ -31,6 +29,7 @@ export const CategoriesProvider = ({children}) => {
     //     addCollectionAndDocuments('categories', SHOP_DATA);
     // }, [])
 
+    const value = {categoriesMap}; // export categoriesMap as an object hash table
     return (
         <CategoriesContext.Provider value={value}>{children}</CategoriesContext.Provider>
     );

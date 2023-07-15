@@ -1,11 +1,31 @@
 import {Routes, Route} from 'react-router-dom';
+import {useEffect} from 'react';
+import {useDispatch} from 'react-redux';
+import { createUserDocumentFromAuth, onAuthStateChangedListener} from './utilities/firebase/firebaseUtilities';
 import Navigation from './routes/navigation/Navigation';
 import Home from "./routes/home/Home";
 import Authentication from './routes/authentication/Authentication';
 import Shop from './routes/shop/Shop';
 import Checkout from './components/checkout/Checkout';
 
+import {setCurrentUser} from './store/user/user-action.js'
+
 const App = () => {
+  const dispatch = useDispatch();
+
+  //moving over to redux. No longer using a UserProvider / User Context. Need to get user another way. Paste previous useEffect code from previous user context file here. Bring in useDispatch hook from redux because we still need to dispatch the action
+  useEffect(() => {
+    const unsubscribe = onAuthStateChangedListener((user) => {
+        console.log(user);
+        if(user) {
+            createUserDocumentFromAuth(user);
+        }
+        dispatch(setCurrentUser(user));
+    });
+
+    return unsubscribe;
+}, [dispatch]);
+
   return (
     <Routes>
     {/* path specifies the route, and then we pass in the component we want to render for the specified route in the element attribute */}
@@ -15,7 +35,7 @@ const App = () => {
       <Route path='/' element={<Navigation />}>
         <Route index={true} element={<Home />}></Route>
 
-        {/* shop route has a /* => the * tells code that when we go to /shop route, we know that there will be a parameter set after shop, because shop will have its own routes inside i.e. /shop/hats, /shop/sneakers, etc etc and to always render the shop component */}
+        {/* shop route has a /* => the * tells code that when we go to /shop route, then just render the shop component first. We know there will be additional routes that the shop component will handle from there */}
         <Route path='shop/*' element={<Shop />}></Route> 
         <Route path='sign-in' element={<Authentication />}></Route>
         <Route path='checkout' element={<Checkout />}></Route>

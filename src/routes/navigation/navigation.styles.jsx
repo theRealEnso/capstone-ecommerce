@@ -35,11 +35,11 @@ export const NavLink = styled(Link)`
 
 
 // .navigation {
-  // height: 70px;
-  // width: 100%;
-  // display: flex;
-  // justify-content: space-between;
-  // margin-bottom: 25px;
+//   height: 70px;
+//   width: 100%;
+//   display: flex;
+//   justify-content: space-between;
+//   margin-bottom: 25px;
 
   
 //     .logo-container {
