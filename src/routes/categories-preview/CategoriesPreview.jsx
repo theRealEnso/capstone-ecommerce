@@ -7,10 +7,15 @@ import { selectCategoriesMap } from '../../store/categories/category-selector';
 import CategoryPreview from '../../components/category-preview/CategoryPreview';
 
 const CategoriesPreview = () => {
-    // const {categoriesMap} = useContext(CategoriesContext);
+    // const {categoriesMap} = useContext(CategoriesContext); // NO LONGER USING CONTEXT, SWITCH TO REDUX
 
-    const categoriesMap = useSelector(selectCategoriesMap);
+    // use the useSelector hook in order to get what we need from the redux store. This hook needs a selector function. This selector function is just something that extracts off the values that we need from the entire redux store
+  //inside the selector function, we receive the ENTIRE state object from redux store => from the entire state object in the redux store, we nest deeper to get the categories reducer, and then even further deeper to get the actual categoriesMap object
 
+    // const categoriesMap = useSelector((state) => state.categories.categoriesMap);
+
+    const categoriesMap = useSelector(selectCategoriesMap); // refactor above line using helper function
+    
     return (
         <Fragment>
             {

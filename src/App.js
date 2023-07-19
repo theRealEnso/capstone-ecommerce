@@ -21,10 +21,15 @@ const App = () => {
             createUserDocumentFromAuth(user);
         }
         dispatch(setCurrentUser(user));
+
+        // dispatch({
+        //   type: USER_ACTION_TYPES.SET_CURRENT_USER,
+        //   payload: user
+        // })
     });
 
     return unsubscribe;
-}, [dispatch]);
+}, [dispatch]); // throws linter error if dependency array is empty. Technically speaking, we aren't updating anything and are only ever dispatching one action on mount, and that is it.
 
   return (
     <Routes>

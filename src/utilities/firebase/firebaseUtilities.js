@@ -50,6 +50,8 @@ export const addCollectionAndDocuments = async (collectionKey, objectsToAdd) => 
     console.log('done!');
 };
 
+// addCollectionAndDocuments('categories', SHOP_DATA);
+
 //async function to get categories + products documents from firestore, returns them as an map object (closest thing to hashmap)
 export const getCategoriesAndDocuments = async () => {
     const collectionRef = collection(db, 'categories'); //collectionRef uses collection method to create a reference to categories collection inside firebase
@@ -57,46 +59,9 @@ export const getCategoriesAndDocuments = async () => {
 
     const querySnapshot = await getDocs(q); // The getDocs method from the Firestore SDK is used to asynchronously retrieve the documents matching the query, which is stored in the querySnapshot constant.
     // console.log(querySnapshot); //prints giant object
-    // console.log(querySnapshot.docs); //nest one layer deeper => .docs contains array of 5 product doc instances for each category
-    const categoryMap = querySnapshot.docs.reduce((accumulator, docSnapshot) => { //querySnapshot.docs is an array that contains our product documents nested under categories collection. Accumulator initializes as empty object
-        // console.log(docSnapshot);
-        console.log(docSnapshot.data()); // .data nested layer shows up under prototype
-        const {title, items} = docSnapshot.data(); // destructure title and items array off of docSnapshot
-        accumulator[title.toLowerCase()] = items; // creating a hash table. Remember that accumulator is an object. On each callback, accumulator object updates with new key-value pairs added (key is the product title, value is array of product objects)
-        return accumulator; 
-    }, {});
-
-    console.log(categoryMap);
-    return categoryMap; // eventually, our object will be a hash table aka giant object, and nested in it the 5 product documents, and nested in each product document an array of product objects tied to that particular product doc (see in red below)
-
-
-    // The function then processes the querySnapshot using the reduce method to create the categoryMap object. The reduce method takes two arguments: a callback function and an initial value for the accumulator. Initial value of accumulator is set as an empty object
-
-    // The callback function is called once for each document in the querySnapshot. It takes two arguments: the accumulator object and the current docSnapshot. The accumulator is the value returned from the previous call to the callback, or the initial value if it's the first call (initial value is empty object). The docSnapshot represents a single product document in the querySnapshot.docs array
-
-    // The callback function extracts the title and items properties from the document data using destructuring and stores them in the title and items constants, respectively. (items is an array of product objects)
-
-    // The accumulator object is then updated by setting a new key-value pair, with the title converted to lowercase using the toLowerCase method as the key and items as the value. Continues this pattern until callback executes on all product documents in the querySnapshot
-
-    // After processing all the documents, the categoryMap object is returned from the function.
-
-    // Overall, the getCategoriesAndDocuments function provides a convenient way to retrieve all documents from a collection in Firestore and store them as a JavaScript object with lowercase document titles as keys and document data as values.
+    console.log(querySnapshot.docs); //nest one layer deeper => .docs contains array of 5 general product doc instances for each category.
+    return querySnapshot.docs.map(docSnapshot => docSnapshot.data()); // give me the actual data inside the general product document instances => returns actual array of 5 giant product objects per category
 };
-
-/* categoryMap should end up looking like this-- one giant object that has nested within it our product categories, and nested under each product categories is an array of objects for each product
-{
-    hats: [{...},{...},{...},{...},{...},{...},],
-
-    jackets: [{...},{...},{...},{...},{...},{...},],
-    
-    sneakers: [{...},{...},{...},{...},{...},{...},],
-    
-    mens: [{...},{...},{...},{...},{...},{...},],
-
-    womens: [{...},{...},{...},{...},{...},{...},],
-}
-
-*/
 
 //async function that accepts user authentication object and store inside of firestore =>  (reminder that userAuth is just a placeholder name). We will be passing in destructured user data directly from the response object back in the SignInComponent
 export const createUserDocumentFromAuth = async (userAuth, additionalInformation = {}) => {
@@ -167,3 +132,54 @@ export const onAuthStateChangedListener = (callback) => {
  * complete: completedCallback
  * }
  */
+
+////////////////////////////////////////////////////////////////////////
+
+//Before migrating to redux
+
+// export const getCategoriesAndDocuments = async () => {
+//     const collectionRef = collection(db, 'categories'); //collectionRef uses collection method to create a reference to categories collection inside firebase
+//     const q = query(collectionRef); // query method on collectionRef creates a query that retrieves all of the documents in categories collection (i.e. hats/jackets/sneakers/womens/mens)
+
+//     const querySnapshot = await getDocs(q); // The getDocs method from the Firestore SDK is used to asynchronously retrieve the documents matching the query, which is stored in the querySnapshot constant.
+//     // console.log(querySnapshot); //prints giant object
+//     // console.log(querySnapshot.docs); //nest one layer deeper => .docs contains array of 5 product doc instances for each category
+//     const categoryMap = querySnapshot.docs.reduce((accumulator, docSnapshot) => { //querySnapshot.docs is an array that contains our product documents nested under categories collection. Accumulator initializes as empty object
+//         // console.log(docSnapshot);
+//         console.log(docSnapshot.data()); // .data nested layer shows up under prototype
+//         const {title, items} = docSnapshot.data(); // destructure title and items array off of docSnapshot
+//         accumulator[title.toLowerCase()] = items; // creating a hash table. Remember that accumulator is an object. On each callback, accumulator object updates with new key-value pairs added (key is the product title, value is array of product objects)
+//         return accumulator; 
+//     }, {});
+
+//     console.log(categoryMap);
+//     return categoryMap; // eventually, our object will be a hash table aka giant object, and nested in it the 5 product documents, and nested in each product document an array of product objects tied to that particular product doc (see in red below)
+
+
+//     // The function then processes the querySnapshot using the reduce method to create the categoryMap object. The reduce method takes two arguments: a callback function and an initial value for the accumulator. Initial value of accumulator is set as an empty object
+
+//     // The callback function is called once for each document in the querySnapshot (docSnapshot). It takes two arguments: the accumulator object and the current docSnapshot. The accumulator is the value returned from the previous call to the callback, or the initial value if it's the first call (initial value is empty object). The docSnapshot represents a single product document in the querySnapshot.docs array
+
+//     // The callback function extracts the title and items properties from the document data using destructuring and stores them in the title and items constants, respectively. (items is an array of product objects)
+
+//     // The accumulator object is then updated by setting a new key-value pair, with the title converted to lowercase using the toLowerCase method as the key and items as the value. Continues this pattern until callback executes on all product documents in the querySnapshot
+
+//     // After processing all the documents, the categoryMap object is returned from the function.
+
+//     // Overall, the getCategoriesAndDocuments function provides a convenient way to retrieve all documents from a collection in Firestore and store them as a JavaScript object with lowercase document titles as keys and document data as values.
+// };
+
+/* categoryMap should end up looking like this-- one giant object that has nested within it our product categories, and nested under each product categories is an array of objects for each product
+{
+    hats: [{...},{...},{...},{...},{...},{...},],
+
+    jackets: [{...},{...},{...},{...},{...},{...},],
+    
+    sneakers: [{...},{...},{...},{...},{...},{...},],
+    
+    mens: [{...},{...},{...},{...},{...},{...},],
+
+    womens: [{...},{...},{...},{...},{...},{...},],
+}
+
+*/

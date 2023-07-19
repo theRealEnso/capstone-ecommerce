@@ -14,15 +14,18 @@ import CartDropdown from '../../components/cart-dropdown/CartDropdown';
 import  {NavigationContainer, NavLinksContainer, NavLink, LogoContainer} from './navigation.styles.jsx';
 
 const Navigation = () => {
-  const currentUser = useSelector(selectCurrentUser); // move code below into separate helper function
 
-  // const currentUser = useSelector((state) => state.user.currentUser); // needs a selector function. This is just something that extracts off the values that we need from the entire redux store
-  //inside the selector function, we receive the ENTIRE state object => from the entire state object in the redux store, we nest deeper to get the user reducer, and then even further deeper to get the actual currentUser object
+  // const currentUser = useSelector((state) => state.user.currentUser); // use the useSelector hook. This is how we extract off the values that we need from the entire redux store. Hook needs a selector function
+
+  //inside the selector function, we always receive the ENTIRE state object of the redux store => from the entire state object in the redux store, we nest deeper to get the user reducer (user key contains userReducer), and then even further deeper to get the actual currentUser object. Reminder that currentUser is the initial state value variable defined in the reducer file
   // useSelector((state) => {
   //   console.log(state);
   //   console.log(state.user);
   //   return state.user.currentUser;
   // });
+
+  const currentUser = useSelector(selectCurrentUser); // refactor code above using separate helper function
+
   const {isCartOpen} = useContext(CartContext);
   
   

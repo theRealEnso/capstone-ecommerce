@@ -11,13 +11,13 @@ import {Title, CategoryContainer} from './category.styles.jsx';
 
 const Category = () => {
     const {category} = useParams();
-    // const {categoriesMap} = useContext(CategoriesContext);
+    // const {categoriesMap} = useContext(CategoriesContext); // NO LONGER USING CONTEXT, SWITCH TO REDUX.  Step 1.) First, take category name from URL...
     
-    const categoriesMap = useSelector(selectCategoriesMap);
+    const categoriesMap = useSelector(selectCategoriesMap); // Step 2.) then use useSelector hook pull off categoriesMap from the selector
     //rather than starting useState with an empty array, we can do categoriesMap[category] because we know that categoriesMap will initially start off as an empty object, and we use this empty object as our initial state value. When data is successfully retrieved from firebase via the getCategoriesAndDocuments function, categoriesMap will eventually be a populated object containing categories and nested arrays of product data
     const [products, setProducts] = useState(categoriesMap[category]); // state is starting as an empty object
 
-
+    // Step 3.) Run an effect that updates the products inside the useState with the products containing category name from the URL. This effect runs every time the category URL parameter changes, or when the categories map itself changes
     useEffect(() => {
         setProducts(categoriesMap[category])
     }, [category, categoriesMap]);
