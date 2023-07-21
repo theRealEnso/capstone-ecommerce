@@ -2,6 +2,7 @@ import {combineReducers} from 'redux';
 
 import {userReducer} from './user/user-reducer.js';
 import { categoriesReducer } from './categories/category-reducer.js';
+import { cartReducer } from './cart/cart-reducer.js';
 
 //one reducer for everything
 // Whenever rootReducer updates ANY of the reducer values inside, the ENTIRE store object is going to be a NEW store object
@@ -9,5 +10,6 @@ import { categoriesReducer } from './categories/category-reducer.js';
 
 export const rootReducer = combineReducers({
     user: userReducer, // user key set to the entire userReducer
-    categories: categoriesReducer
+    categories: categoriesReducer, // categories key set to entire categoriesReducer
+    cart: cartReducer
 });

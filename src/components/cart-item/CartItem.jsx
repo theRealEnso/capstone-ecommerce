@@ -1,15 +1,18 @@
-import {useContext} from 'react';
-import { CartContext } from '../../contexts/CartContext';
+import {useDispatch, useSelector} from 'react-redux';
+
+import { selectCartItems } from '../../store/cart/cart-selector';
+import { addItemToCart, deleteItemFromCart, removeItemFromCart } from '../../store/cart/cart-actions';
+
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 import {CartItemContainer, ItemDetails, CartItemName, CartItemPrice, IconContainer, Subtract, Add, Remove} from './cartItem.styles.jsx';
 
 const CartItem = ({cartItem}) => {
     const {name, quantity, imageUrl, price} = cartItem;
-    const {deleteItemFromCart, addItemToCart, removeItemFromCart} = useContext(CartContext);
-
-    const permanentlyRemoveFromCart = () => deleteItemFromCart(cartItem);
-    const addOneToCart = () => addItemToCart(cartItem);
-    const removeOneFromCart = () => removeItemFromCart(cartItem);
+    const dispatch = useDispatch();
+    const cartItems = useSelector(selectCartItems);
+    const permanentlyRemoveFromCart = () => dispatch(deleteItemFromCart(cartItems, cartItem));
+    const addOneToCart = () => dispatch(addItemToCart(cartItems, cartItem));
+    const removeOneFromCart = () => dispatch(removeItemFromCart(cartItems, cartItem));
 
     return (
         <CartItemContainer>

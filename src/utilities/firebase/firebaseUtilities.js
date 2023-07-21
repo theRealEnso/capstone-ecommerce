@@ -70,7 +70,7 @@ export const createUserDocumentFromAuth = async (userAuth, additionalInformation
     const userDocRef = doc(db, 'users', userAuth.uid); //use unique id from user object to get document reference
     console.log(userDocRef);
 
-    const userSnapshot = await getDoc(userDocRef);
+    const userSnapshot = await getDoc(userDocRef); //actually get the data inside the document reference
     console.log(userSnapshot);
     console.log(userSnapshot.exists()); //.exists method returns a boolean
 

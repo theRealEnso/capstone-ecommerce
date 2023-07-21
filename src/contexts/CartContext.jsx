@@ -55,7 +55,9 @@ export const CartContext = createContext({
 
 const CART_ACTION_TYPES = {
     SET_CART_ITEMS: 'SET_CART_ITEMS',
-    SET_IS_CART_OPEN: 'SET_IS_CART_OPEN'
+    SET_IS_CART_OPEN: 'SET_IS_CART_OPEN',
+    SET_CART_COUNT: 'SET_CART_COUNT',
+    SET_CART_TOTAL: 'SET_CART_TOTAL'
 }
 
 // Note that only the 4 readable values defined in this initial state object is what will be stored and altered in the state object henceforth
@@ -95,7 +97,7 @@ export const CartProvider = ({children}) => {
     //whenever the items in the cart are updated, then generate new total, new item counts, and new array of items and call the dispatch function to update the state object with these new values
     const updateCartReducer = (newCartItems) => {
         // generate newCartTotal
-        const newTotal = newCartItems.reduce((accumulator, cartItem) => accumulator + (cartItem.quantity * cartItem.price), 0);
+        const newCartTotal = newCartItems.reduce((accumulator, cartItem) => accumulator + (cartItem.quantity * cartItem.price), 0);
 
         // generate newCartCount
         const newCartCount = newCartItems.reduce((accumulator, cartItem) => accumulator + cartItem.quantity, 0);
@@ -105,7 +107,7 @@ export const CartProvider = ({children}) => {
             type: CART_ACTION_TYPES.SET_CART_ITEMS,
             payload: {
                 cartItems: newCartItems,
-                cartTotal: newTotal,
+                cartTotal: newCartTotal,
                 cartCount: newCartCount
             }
         });

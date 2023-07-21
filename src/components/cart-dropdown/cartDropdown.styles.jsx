@@ -3,8 +3,8 @@ import {BaseButton, GoogleSignInButton, InvertedButton} from '../button/button.s
 
 export const CartDropdownContainer = styled.div`
   position: absolute;
-  width: 300px;
-  height: 340px;
+  width: 320px;
+  height: 360px;
   display: flex;
   flex-direction: column;
   padding: 20px;
@@ -34,7 +34,6 @@ export const CartItems = styled.div`
 `;
 
 export const Subtotal = styled.div`
-  border-top: 1px solid black;
   text-align: center;
 `;
 

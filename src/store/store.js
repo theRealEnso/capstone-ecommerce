@@ -3,6 +3,9 @@
 import {compose, legacy_createStore, applyMiddleware} from 'redux';
 // import logger from 'redux-logger';
 
+import {persistStore, persistReducer} from 'redux-persist';
+import storage from 'redux-persist/lib/storage';
+
 import {rootReducer} from './root-reducer';
 
 //writing our own logger middleware
@@ -23,9 +26,27 @@ const loggerMiddleware = (store) => (next) => (action) => { // first function re
     console.log('next state: ', store.getState()); // 
 }
 
-//root-reducer 
+const persistConfig = { // set up configuration object that tells redux persist what we want
+    key: 'root', // root basically says that we want to persist the whole thing. Start from the root level
+    storage, // by default, web browsers will use local storage. This is shorthand version where we can cast the variable as the key name, but can also do storage: storage
+    blacklist: ['user'] // tells what to blacklist i.e. what we don't want to persist. Pass in array of strings of the reducer values in root reducer => here, we are blacklisting user bc user is being handled by onAuthStateChangedListener. This might conflict and clash with local storage
+}
+
+// what is local storage? => this is a property that allows JS sites and apps to save key-value pairs in a web browser with no expiration date. This means that the data stored persists even after the user closes the browser or restarts the computer
+
+const persistedReducer = persistReducer(persistConfig, rootReducer); // create persisted reducer using persistReducer method. Pass in the persistConfig and rootReducer as arguments
+
+
 const middleWares = [loggerMiddleware]; // middlewares enhance store => they catch actions that have been dispatched before they hit the reducers, and then logs the state
 
 const composedEnhancers = compose(applyMiddleware(...middleWares));
 
-export const store = legacy_createStore(rootReducer, undefined, composedEnhancers); // store will always need rootReducer. legacy_createStore takes 3 parameters
+export const store = legacy_createStore(persistedReducer, undefined, composedEnhancers); // store will always need rootReducer. legacy_createStore takes 3 parameters
+
+export const persistor = persistStore(store);
+
+
+
+//////////  OLD SET UP WITH ROOT REDUCER BEFORE USING PERSISTED REDUCER     /////////////////////////////////////////////
+
+// export const store = legacy_createStore(rootReducer, undefined, composedEnhancers); // store will always need rootReducer. legacy_createStore takes 3 parameters

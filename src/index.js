@@ -2,9 +2,9 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import {BrowserRouter} from 'react-router-dom';
 import {Provider} from 'react-redux';
-import { CartProvider } from './contexts/CartContext';
+import {PersistGate} from 'redux-persist/integration/react';
 
-import {store} from './store/store.js'
+import {store, persistor} from './store/store.js'
 
 import './index.scss';
 import App from './App';
@@ -15,11 +15,11 @@ const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
   <Provider store={store}>
-    <BrowserRouter>
-      <CartProvider>
+    <PersistGate persistor={persistor} loading={null}> {/*can pass in a component into the loading prop if we want to display a loading screen or something else while user refreshes, or pass null if we don't want to display anything */}
+      <BrowserRouter>
         <App />
-      </CartProvider>
-    </BrowserRouter>
+      </BrowserRouter>
+    </PersistGate>
   </Provider>
   </React.StrictMode>
 );

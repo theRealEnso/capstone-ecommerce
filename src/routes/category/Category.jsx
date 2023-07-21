@@ -10,10 +10,10 @@ import ProductCard from '../../components/products/ProductCard';
 import {Title, CategoryContainer} from './category.styles.jsx';
 
 const Category = () => {
-    const {category} = useParams();
-    // const {categoriesMap} = useContext(CategoriesContext); // NO LONGER USING CONTEXT, SWITCH TO REDUX.  Step 1.) First, take category name from URL...
+    const {category} = useParams(); // NO LONGER USING CONTEXT, SWITCH TO REDUX.  Step 1.) First, take category name from URL...
+    // const {categoriesMap} = useContext(CategoriesContext); 
     
-    const categoriesMap = useSelector(selectCategoriesMap); // Step 2.) then use useSelector hook pull off categoriesMap from the selector
+    const categoriesMap = useSelector(selectCategoriesMap); // Step 2.) then use useSelector hook pull off categoriesMap from the selector file (map object)
     //rather than starting useState with an empty array, we can do categoriesMap[category] because we know that categoriesMap will initially start off as an empty object, and we use this empty object as our initial state value. When data is successfully retrieved from firebase via the getCategoriesAndDocuments function, categoriesMap will eventually be a populated object containing categories and nested arrays of product data
     const [products, setProducts] = useState(categoriesMap[category]); // state is starting as an empty object
 

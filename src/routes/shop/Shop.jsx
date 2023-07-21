@@ -21,7 +21,7 @@ const Shop = () => {
 
     getCategoriesMap();
     
-  }, [dispatch]);
+  }, [dispatch]); // technically just running this function once. Dependency array in useEffect will throw linter error if left empty
 
     return (
         <Routes>
