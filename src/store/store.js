@@ -8,6 +8,8 @@ import storage from 'redux-persist/lib/storage';
 
 import {rootReducer} from './root-reducer';
 
+import thunk from 'redux-thunk'
+
 //writing our own logger middleware
 // 3 functions that return from one another (chained curried functions) => concept of currying functions: currying a function is a function that returns another function
 const loggerMiddleware = (store) => (next) => (action) => { // first function receives store object => this in turn returns another function that receives the next method (the thing that allows us to pass on the action) => after, the next function that is returned receives the action. Finally, we write the code that we wan't the middleware to do
@@ -17,8 +19,8 @@ const loggerMiddleware = (store) => (next) => (action) => { // first function re
     }
 
     //If there is an action, then do the following:
-    console.log('type', action.type);
-    console.log('payload', action.payload);
+    console.log('type: ', action.type);
+    console.log('payload: ', action.payload);
     console.log('currentState: ', store.getState()); //getState method just gets us the value of the state at this instance
 
     next(action); // this next action is being passed to each subsequent middleware and all of the reducers. Once the reducers update, and then update the redux store object afterwards, which in turn calls the useSelectors on all of our components, then the next console log line runs
@@ -36,10 +38,13 @@ const persistConfig = { // set up configuration object that tells redux persist 
 
 const persistedReducer = persistReducer(persistConfig, rootReducer); // create persisted reducer using persistReducer method. Pass in the persistConfig and rootReducer as arguments
 
+// middlewares enhance store => they catch actions that have been dispatched before they hit the reducers, and then logs the state
+const middleWares = [process.env.NODE_ENV === 'development' && loggerMiddleware, thunk].filter(Boolean);//filter out anything that is not true / is falsy.
+//In other words, if our process environment is in development, then allow loggerMiddleware to function. If it is changed to 'production' then loggerMiddleware will not show
 
-const middleWares = [loggerMiddleware]; // middlewares enhance store => they catch actions that have been dispatched before they hit the reducers, and then logs the state
+const composeEnhancer = (process.env.NODE_ENV === 'development' && window && window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__) || compose;
 
-const composedEnhancers = compose(applyMiddleware(...middleWares));
+const composedEnhancers = composeEnhancer(applyMiddleware(...middleWares));
 
 export const store = legacy_createStore(persistedReducer, undefined, composedEnhancers); // store will always need rootReducer. legacy_createStore takes 3 parameters
 

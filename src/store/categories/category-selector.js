@@ -5,22 +5,24 @@
 import {createSelector} from 'reselect';
 //how reselect works => creates a 'memoized' selector => memoization is the process of caching the previous value of something. When a derived data selector is created using createSelector, it automatically memoizes the output. Memoization means that if the input selectors' values haven't changed since the last invocation, the selector will return the cached result instead of recomputing it. This caching mechanism improves performance by avoiding unnecessary recomputations, which in turn, avoids react components from needlessly re-rendering
 
-const selectCategoryReducer = (state) => state.categories; // first, create an input selector that determines what our output should be. This selector function receives the entire redux store state, and then from this, slice off the categories reducer of the redux store. This is not memoized yet, but will be used in the MEMOIZED selector next
+const selectCategoryReducer = (state) => state.categories; // first, create an input selector that will be used to determine what our output should be in the next step. This selector function simply receives the entire redux store state, and targets the categories reducer
 
-export const selectCategories = createSelector([selectCategoryReducer], (categoriesSlice) => categoriesSlice.categories); // makes a memoized selector => createSelector is a function that takes the redux store state as its input and returns a value derived from this state =>  method takes 2 arguments -- 1.) an array of any input selectors (can have multiple input selectors. These will be used to produce what the selector will ultimately return back in the output), and 2.) the result function. This result function takes the OUTPUT of the input selector (in this case it is basically state.categories) and computes the final value (Here, I am saying that, FROM the input selector, I want to extract categories from the redux store);
+export const selectCategories = createSelector([selectCategoryReducer], (categoriesSlice) => categoriesSlice.categoriesArray); // makes a memoized selector => createSelector is a function that has two arguments; First, it takes an array of input selectors (can have multiple selectors) and second is the result function. The result function RECEIVES the RESULTS of the input selectors as arguments, then performs some operation or computation on those arguments
 
-// only re-runs if input selector selectCategoryReducer i.e the categories from redux state actually changes or is different in value
+// In this case, the result function receives the result of selectCategoryReducer(state.categories) and stores it in categoriesSlice as an argument. It then proceeds to extract the categories property/array from categoriesSlice a.k.a state.categories,  essentially doing state.categories.categories
 
+// => selectCategories is now a memoized selector
 
-
-// make another memoized selector => run this reduce only once on component mount, and do not run the reduce method unless selectCategories actually changes
-export const selectCategoriesMap = createSelector([selectCategories], (categories) => categories.reduce((accumulator, category) => { // Here, I am saying I want to take the categories that we sliced off of the redux store, and perform this reduce logic with it.
+//creating another memoized selector. This one receives the previously memoized selectCategories selector as an input. The result function for this selector receives the result of selectCategories as an argument (which again is the categoriesArray) and then proceeds to perform the reduce logic on this array
+export const selectCategoriesMap = createSelector([selectCategories], (categoriesArray) => categoriesArray.reduce((accumulator, category) => { // Here, I am saying I want to take the categories that we sliced off of the redux store, and perform this reduce logic with it.
     // console.log(category);
     const {title, items} = category;
     accumulator[title.toLowerCase()] = items;
     return accumulator;
     }, {})
 );
+
+export const selectCategoriesIsLoading = createSelector([selectCategoryReducer], (categoriesSlice) => categoriesSlice.isLoading);
 
 //////////////////////////      OLD CODE ////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -33,4 +35,8 @@ export const selectCategoriesMap = createSelector([selectCategories], (categorie
     //     return accumulator;
     // }, {});
 
-    // // this old function always returns a new object. Since it always returns a new object, the useSelector inside the category component will always re-render because it is unable to cache the value of the new object and pass the equality check to see if the new object === previous, even though the data itself isn't really changing. Need to tackle this issue of needlessly re-rendering => fix this using reselect library
+//Currently, every time this selector runs, the logic that reduces over the categories array re-runs, and returns a new net map object every time, despite the categories array never changing. Since a new net object gets returned every time, this will cause React to unnecessarily re-render components. 
+
+// Meaning that, as it currently stands, whenever the user navigates to, away from, and back to Shop, and the Categories Preview component is rendered again, useSelector returns a new categoriesMap object every single time even though the actual data does not change, forcing React to re-render the "new" object. 
+
+// Likewise, it is the same with the Category component--when user navigates to, away from, and then back to View More and the Category component is rendered on the screen again, useSelector returns a brand new categoriesMap object. It is unable to cache or store value and use the same cached value to avoid unnecessary re-renders. This is where the re-select library comes in

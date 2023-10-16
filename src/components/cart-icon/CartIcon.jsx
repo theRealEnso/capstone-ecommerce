@@ -20,13 +20,14 @@ const CartIcon = () => {
     useEffect(() => {
         const closeCartDropDown = (event) => {
             console.log(event);
-            if(event.target.id !== 'Capa_1' && event.target.className !== 'sc-gueYoa inPKWa' && event.target.innerHTML !== 'Add to Cart' && event.target.innerHTML !== "−" && event.target.innerHTML !== '+' && event.target.parentNode.lastElementChild.lastChild.tagName !== 'path') {
+            if(event.target.id !== 'Capa_1' && event.target.className !== 'sc-gueYoa inPKWa' && event.target.innerHTML !== 'Add to Cart' && event.target.innerHTML !== "−" && event.target.innerHTML !== '+') {
                 dispatch(setIsCartOpen(false));
             };
         };
-        document.body.addEventListener('click', closeCartDropDown);
+        
+        const cartDropdownEventListener = document.body.addEventListener('click', closeCartDropDown);
 
-        return () => document.body.removeEventListener('click', closeCartDropDown); // remove event listener when component unmounts
+        return cartDropdownEventListener;
     }, [dispatch]);
 
     return (

@@ -77,4 +77,20 @@ export const UserProvider = ({children}) => {
     }, []);
 
     return <UserContext.Provider value={value}>{children}</UserContext.Provider>
+
+// The useEffect hook is used with an empty dependency array [], which means the effect will run only once when the component mounts.
+
+// Inside the useEffect hook, the onAuthStateChangedListener function is called, passing a callback function that will be executed whenever the authentication state changes (i.e., when a user logs in or out).
+
+// The onAuthStateChangedListener is presumably a function provided by Firebase that sets up a listener to monitor changes in the user's authentication state.
+
+// The provided callback function checks if a user is authenticated (if (user)) and then either creates a new user document in Firebase or signs in the existing user using the createUserDocOrSignInUserFromAuth function.
+
+// The setCurrentUser function is then called to update the currentUser state with the newly authenticated user or null if the user is not authenticated.
+
+// Finally, the unsubscribe function is returned from the useEffect hook. This function is what allows the removal of the listener when the component unmounts.
+
+// When the component is about to unmount (e.g., when the user navigates away from the page or the component is removed from the DOM), React will automatically call the returned unsubscribe function. This function is a cleanup function provided by the useEffect hook, and you can use it to perform cleanup tasks before the component is unmounted.
+
+// In this specific case, the unsubscribe function likely does the job of removing the listener set up by onAuthStateChangedListener. Removing the listener ensures that there are no memory leaks or unnecessary updates happening in the background when the component is no longer in use. This helps with performance and memory management.
 };

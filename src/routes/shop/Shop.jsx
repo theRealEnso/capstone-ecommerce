@@ -5,21 +5,25 @@ import {useDispatch} from 'react-redux';
 import CategoriesPreview from '../categories-preview/CategoriesPreview';
 import Category from '../category/Category';
 
-import { getCategoriesAndDocuments } from '../../utilities/firebase/firebaseUtilities';
-import { setCategories } from '../../store/categories/category-actions';
+// import { getCategoriesAndDocuments } from '../../utilities/firebase/firebaseUtilities';
+// import { setCategoriesArray } from '../../store/categories/category-actions';
+import { fetchCategoriesAsync } from '../../store/categories/category-actions';
 
 const Shop = () => {
     const dispatch = useDispatch();
 
     //moving over to redux. No longer using Categories Provider / Categories Context. Need to get categories another way. Paste previous useEffect code from previous user context file here. Bring in useDispatch hook from redux because we still need to dispatch the action
   useEffect(() => {
-    const getCategoriesMap = async () => {
-        const categoriesArray = await getCategoriesAndDocuments(); // modified this function in firebase utils to just get general data (array of 5 giant product objects) instead of fully returning a map object
-        console.log(categoriesArray);
-        dispatch(setCategories(categoriesArray));
-    };
+    dispatch(fetchCategoriesAsync());
 
-    getCategoriesMap();
+    //move async stuff over to redux thunk
+    // const getCategoriesMap = async () => {
+    //     const categoriesArray = await getCategoriesAndDocuments(); // modified this function in firebase utils to just get general data (array of 5 giant product objects) instead of fully returning a map object
+    //     // console.log(categoriesArray);
+    //     dispatch(setCategoriesArray(categoriesArray));
+    // };
+
+    // getCategoriesMap();
     
   }, [dispatch]); // technically just running this function once. Dependency array in useEffect will throw linter error if left empty
 

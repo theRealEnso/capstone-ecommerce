@@ -36,9 +36,9 @@ export const addCollectionAndDocuments = async (collectionKey, objectsToAdd) => 
     const collectionRef = collection(db, collectionKey); //collectionRef now refers to categories collection inside db
     const batch = writeBatch(db); // create batch instance in order to add all of our objects to collectionRef in one successful transaction. A writeBatch is created using the writeBatch method from the Firestore SDK. A batch is a way to perform multiple write operations atomically. This means that either all the write operations will succeed, or none of them will.
 
-    //Iterating through SHOP_DATA, create and set each object into collectionRef a.k.a categories collection as a new document, passing in the title. This creates hats/jackets/mens/sneakers/womens documents that will be nested under categories using the doc method. Finally, set method is used to populate  hats/jackets/mens/sneakers/womens docs with their respective data
+    //Iterating through SHOP_DATA, create and set each object into collectionRef a.k.a categories collection as a new document, using the title as the ID. This creates hats/jackets/mens/sneakers/womens documents that will be nested under categories using the doc method. Finally, set method is used to populate  hats/jackets/mens/sneakers/womens docs with their respective data
 
-    //Or in other words, The function then iterates over each object in the objectsToAdd array, creating a reference to a document within the collectionRef using the doc method from the Firestore SDK. The document reference is created using the object's title property as the document ID, converted to lowercase using the toLowerCase method.
+    //Or in other words, The function then iterates over each object in the objectsToAdd array (SHOP_DATA array of objects), creating a reference to a document within the collectionRef using the doc method from the Firestore SDK. The document reference is created using the object's title property as the document ID, converted to lowercase using the toLowerCase method.
     objectsToAdd.forEach((object) => {
         const docRef = doc(collectionRef, object.title.toLowerCase());
         batch.set(docRef, object);
