@@ -1,34 +1,39 @@
 import {Routes, Route} from 'react-router-dom';
 import {useEffect} from 'react';
+
 import {useDispatch} from 'react-redux';
-import { createUserDocumentFromAuth, onAuthStateChangedListener} from './utilities/firebase/firebaseUtilities';
+import { checkUserSession } from './store/user/user-action.js';
+// import {setCurrentUser} from './store/user/user-action.js'
+
+// import { createUserDocumentOrSignInUserFromAuth, onAuthStateChangedListener} from './utilities/firebase/firebaseUtilities';
 import Navigation from './routes/navigation/Navigation';
 import Home from "./routes/home/Home";
 import Authentication from './routes/authentication/Authentication';
 import Shop from './routes/shop/Shop';
 import Checkout from './components/checkout/Checkout';
 
-import {setCurrentUser} from './store/user/user-action.js'
+
 
 const App = () => {
   const dispatch = useDispatch();
 
   //moving over to redux. No longer using a UserProvider / User Context. Need to get user another way. Paste previous useEffect code from previous user context file here. Bring in useDispatch hook from redux because we still need to dispatch the action
   useEffect(() => {
-    const unsubscribe = onAuthStateChangedListener((user) => {
-        console.log(user);
-        if(user) {
-            createUserDocumentFromAuth(user);
-        }
-        dispatch(setCurrentUser(user));
+    dispatch(checkUserSession());
+    // const unsubscribe = onAuthStateChangedListener((user) => {
+    //     console.log(user);
+    //     if(user) {
+    //         createUserDocumentOrSignInUserFromAuth(user);
+    //     }
+    //     dispatch(setCurrentUser(user));
 
-        // dispatch({
-        //   type: USER_ACTION_TYPES.SET_CURRENT_USER,
-        //   payload: user
-        // })
-    });
+    //     // dispatch({
+    //     //   type: USER_ACTION_TYPES.SET_CURRENT_USER,
+    //     //   payload: user
+    //     // })
+    // });
 
-    return unsubscribe;
+    // return unsubscribe;
 }, [dispatch]); // throws linter error if dependency array is empty. Technically speaking, we aren't updating anything and are only ever dispatching one action on mount, and that is it.
 
   return (

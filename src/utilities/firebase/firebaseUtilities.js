@@ -66,10 +66,10 @@ export const getCategoriesAndDocuments = async () => {
 };
 
 //async function that accepts user authentication object and store inside of firestore =>  (reminder that userAuth is just a placeholder name). We will be passing in destructured user data directly from the response object back in the SignInComponent
-export const createUserDocumentFromAuth = async (userAuth, additionalInformation = {}) => {
+export const createUserDocumentOrSignInUserFromAuth = async (userAuth, additionalInformation = {}) => {
     if(!userAuth) return;
     //doc function takes 3 arguments (firestore database instance, name of collection (will set collection with name if it does not exist), and a unique ID)
-    const userDocRef = doc(db, 'users', userAuth.uid); //use unique id from user object to get document reference
+    const userDocRef = doc(db, 'users', userAuth.uid); //use unique id from user object to get document reference that points to where the data exists in firebase. Only a pointer, not actual data
     console.log(userDocRef);
 
     const userSnapshot = await getDoc(userDocRef); //actually get the data inside the document reference
@@ -92,7 +92,8 @@ export const createUserDocumentFromAuth = async (userAuth, additionalInformation
             console.log(`error creating the user: ${error}`)
         }
     } else {
-        return userDocRef;
+        // return userDocRef;
+        return userSnapshot;
     }
 };
 
@@ -112,6 +113,15 @@ export const signOutUser = async () => await signOut(auth);
 
 export const onAuthStateChangedListener = (callback) => {
     onAuthStateChanged(auth, callback)
+};
+
+export const getCurrentUser = () => {
+    return new Promise((resolve, reject) => {
+        const unsubscribe = onAuthStateChanged(auth, (userAuthObj) => {
+            resolve(userAuthObj);
+            return unsubscribe;
+        }, reject)
+    });
 };
 
 //note that auth i.e getAuth() is sort of like a state that keeps track of user data (if the user is signed in) or null if the user is signed out
