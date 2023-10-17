@@ -58,9 +58,11 @@ export const getCategoriesAndDocuments = async () => {
     const q = query(collectionRef); // query method on collectionRef creates a query that retrieves all of the documents in categories collection (i.e. hats/jackets/sneakers/womens/mens)
 
     const querySnapshot = await getDocs(q); // The getDocs method from the Firestore SDK is used to asynchronously retrieve the documents matching the query, which is stored in the querySnapshot constant.
-    // console.log(querySnapshot); //prints giant object
-    console.log(querySnapshot.docs); //nest one layer deeper => .docs contains array of 5 general product doc instances for each category.
-    return querySnapshot.docs.map(docSnapshot => docSnapshot.data()); // give me the actual data inside the general product document instances => returns actual array of 5 giant product objects per category
+    // console.log(querySnapshot); //prints giant object. Need to nest deeper
+    console.log(querySnapshot.docs); //nest one layer deeper => .docs contains array of 5 general product doc instances for each category, but not actual data
+    const categoriesArray = querySnapshot.docs.map((document) => document.data()); // give me the actual data inside the general product document instances => returns actual array of 5 giant product objects per category
+
+    return categoriesArray;
 };
 
 //async function that accepts user authentication object and store inside of firestore =>  (reminder that userAuth is just a placeholder name). We will be passing in destructured user data directly from the response object back in the SignInComponent

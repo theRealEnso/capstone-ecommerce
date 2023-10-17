@@ -1,4 +1,4 @@
-import {all, call} from 'react-saga/effects';
+import {all, call} from 'redux-saga/effects';
 
 import { categoriesSaga } from './categories/categories-saga';
 //import userSagas
